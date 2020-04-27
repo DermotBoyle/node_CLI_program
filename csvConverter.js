@@ -9,7 +9,6 @@ var args = require("minimist")(process.argv.slice(2), {
 });
 
 var BASE_PATH = path.resolve(process.env.BASE_PATH || __dirname);
-const OUTFILE = path.join(BASE_PATH, "ventas.json");
 var listOfSales = {};
 let finalResultFigures = [];
 let content;
@@ -30,11 +29,11 @@ let removeMinusEuro = /(\-|€)/g;
 let removePlusEuro = /(\+|€)/g;
 
 //CREATE READABLE STREAMS
-if (args.file[1]) {
-	let stream = fs.createReadStream(path.join(BASE_PATH, args.file[1]));
+if (args.file[0]) {
+	let stream = fs.createReadStream(path.join(BASE_PATH, args.file[0]));
 	processFile(stream);
 
-	var path = fs.readFile(path.join(BASE_PATH, args.file[0]), function read(
+	var path = fs.readFile(path.join(BASE_PATH, args.file[1]), function read(
 		err,
 		data
 	) {
@@ -71,7 +70,12 @@ function getProfits(content) {
 
 	//**FS CREATE FILE AND PRINT */
 
-	console.log(finalResultFigures);
+	finalResultFigures = JSON.stringify(finalResultFigures);
+
+	fs.writeFile("result.JSON", finalResultFigures, function (err) {
+		if (err) throw err;
+		console.log("file successfully created");
+	});
 }
 
 //***IF ONLY ONE PROCESS IS TO BE APPLIED TO FIGURE */
@@ -179,7 +183,7 @@ function processFile(instream) {
 	});
 
 	let waitHere = parseJsonStream.on("end", function () {
-		console.log("ended - - - - - - - - - - - - - - - - - -");
+		console.log("end  - - - - - - - - of - - - - - - - - - stream");
 	});
 
 	// Convert a csv file with csvtojson
