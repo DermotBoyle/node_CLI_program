@@ -4,7 +4,7 @@ var path = require("path");
 var fs = require("fs");
 var through2 = require("through2");
 var args = require("minimist")(process.argv.slice(2), {
-	boolean: ["help", "in", "out"],
+	boolean: ["help"],
 	string: ["file"]
 });
 
@@ -29,27 +29,36 @@ let removeMinusEuro = /(\-|€)/g;
 let removePlusEuro = /(\+|€)/g;
 
 //CREATE READABLE STREAMS
-if (args.file[0]) {
+
+if (args.help) {
+	printHelp();
+} else if (args.file[0]) {
+	//**CREATE READ STREAM */
 	let stream = fs.createReadStream(path.join(BASE_PATH, args.file[0]));
 	processFile(stream);
 
+	//**READ AND PARSE FILE */
 	var path = fs.readFile(path.join(BASE_PATH, args.file[1]), function read(
 		err,
 		data
 	) {
 		if (err) {
-			throw err;
+			printHelp();
 		}
 		content = JSON.parse(data);
 		getProfits(content);
 	});
 } else {
-	error("incorrect command");
+	error("incorrect command", true);
 }
 
 //***ERROR FUNCTION */
-function error(msg) {
+function error(msg, includeHelp = false) {
 	console.log(msg);
+	if (includeHelp) {
+		console.log("");
+		printHelp();
+	}
 }
 
 //**PROCESS SALES LIST THAT MATCHES PRICING SCHEMA OR PASS TO WILDCARD */
@@ -182,7 +191,7 @@ function processFile(instream) {
 		callback();
 	});
 
-	let waitHere = parseJsonStream.on("end", function () {
+	parseJsonStream.on("end", function () {
 		console.log("end  - - - - - - - - of - - - - - - - - - stream");
 	});
 
@@ -218,4 +227,17 @@ function processFile(instream) {
 
 	var targetStream = process.stdout;
 	outStream.pipe(targetStream);
+}
+
+//**HELP COMMANDS */
+
+function printHelp(params) {
+	console.log("------ CSV CONVERTER USAGE -------");
+	console.log("");
+	console.log(
+		"./csvConverter --file={VENTAS FILENAME}  --file={PRECIOS FILENAME}"
+	);
+	console.log("");
+	console.log("--file={FILENAME}                process this file");
+	console.log("");
 }
