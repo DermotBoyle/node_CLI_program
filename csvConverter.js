@@ -97,6 +97,7 @@ function getTotalSingleProcess(name, value, process, quantity, resultLength) {
 			plusEurScheme = Number(plusEurScheme);
 			let profitPlusEur = quantity * plusEurScheme;
 			if (resultLength < 2) {
+				profitPlusEur = profitPlusEur.toFixed(2);
 				finalResultFigures.push({ [name]: profitPlusEur });
 			}
 			return profitPlusEur;
@@ -107,6 +108,7 @@ function getTotalSingleProcess(name, value, process, quantity, resultLength) {
 			minusEurScheme = Number(minusEurScheme);
 			let profitMinusEur = quantity * minusEurScheme;
 			if (resultLength < 2) {
+				profitMinusEur = profitMinusEur.toFixed(2);
 				finalResultFigures.push({ [name]: profitMinusEur });
 			}
 			return profitMinusEur;
@@ -119,6 +121,7 @@ function getTotalSingleProcess(name, value, process, quantity, resultLength) {
 			let profitPercentPlus =
 				(plusTotalQuantityCost / 100) * plusPercentProcess;
 			if (resultLength < 2) {
+				profitPercentPlus = profitPercentPlus.toFixed(2);
 				finalResultFigures.push({ [name]: profitPercentPlus });
 			}
 			return profitPercentPlus;
@@ -131,6 +134,7 @@ function getTotalSingleProcess(name, value, process, quantity, resultLength) {
 			let totalQuantityCost = cost * quantity;
 			let profitPercentMinus = (totalQuantityCost / 100) * minusPercentProcess;
 			if (resultLength < 2) {
+				profitPercentMinus = profitPercentMinus.toFixed(2);
 				finalResultFigures.push({
 					[name]: profitPercentMinus
 				});
@@ -149,6 +153,7 @@ function getTotalMultipleProcess(name, value, process, quantity) {
 	let secondRes = getTotalSingleProcess(name, value, result[1], quantity);
 
 	let finalVal = firstRes + secondRes;
+	finalVal = finalVal.toFixed(2);
 
 	finalResultFigures.push({ [name]: finalVal });
 }
